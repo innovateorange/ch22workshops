@@ -9,6 +9,5 @@ int main(int argc, char* argv[]){
  
     chessBoard board(nQueens);
     board.initializeGame();
-    board.printDiagnostic();
     board.solveGame();
 }
