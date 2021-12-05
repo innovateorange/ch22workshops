@@ -19,13 +19,13 @@ public:
 private:
 
     bool isGameSolved();
-    std::vector<std::tuple<int, int, int> > numConflicts();
+    
     std::tuple<int, int, int> getMove(int j);
     int numConflictsAt(int i, int j);
     int numConflictsAtNew(int i , int j);
     void placeQueen(int i, int j);
     void moveQueen(int i, int j);
-    int stateValue(int qi, int qj, int i, int j);
+    
     std::vector<std::vector<bool> > queens;
     
     //Hint: Formulate the problem around the notion of occupied cols, rows, or diagonals

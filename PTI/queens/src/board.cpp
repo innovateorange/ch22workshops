@@ -107,17 +107,7 @@ chessBoard::chessBoard(int rowsCols): n(rowsCols) {
 
 }
 /* Calculate the number of conflicts each queen has */
-std::vector<std::tuple<int, int, int> > chessBoard::numConflicts(){
-    std::vector<std::tuple<int, int, int> > conflicts;
-    for(int i = 0; i < n; i++){
-        for(int j = 0; j < n; j++){
-            if(queens[i][j]){
-                conflicts.push_back(std::make_tuple(i, j, numConflictsAt(i, j)));
-            }
-        }
-    }
-    return conflicts;
-}
+
 /* Conflict checking algorithm */
 int chessBoard::numConflictsAt(int i, int j){
     int totalConflicts = 0;
@@ -184,9 +174,14 @@ void chessBoard::moveQueen(int i, int j){
 }
 /*Check if the game is solved by getting the num of conflicts for each queen*/
 bool chessBoard::isGameSolved(){
-    std::vector<std::tuple<int, int, int> > conflicts = numConflicts();
-    for(int i = 0; i < conflicts.size(); i++){
-        if (std::get<2>(conflicts[i]) > 0){
+    
+    for(int i = 0; i < n; i++){
+        if (rows[i] > 1 || cols[i] > 1){
+            return false;
+        }
+    }
+    for(int i = 0; i < 2*n-1; i++){
+        if(mainDiags[i] > 1 || reverseDiags[i] > 1){
             return false;
         }
     }
