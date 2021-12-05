@@ -1,0 +1,5 @@
+.vscode
+*.gch
+*.out
+*.out.dSYM
+main
