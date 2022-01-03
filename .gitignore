@@ -2,4 +2,5 @@
 *.gch
 *.out
 *.out.dSYM
+*Adverts.md
 main
