@@ -1,7 +1,8 @@
 #include "sTree.hpp"
+#include <unordered_set>
 #include <iostream>
-
-
+#include <algorithm>
+#include <execution>
 /* Lone Constructor */
 stree::stree(int depth) 
 {
@@ -50,7 +51,8 @@ void stree::build_tree_helper(node* cur_root, int cur_depth, int max_depth){
 */
 void stree::playTree(int num_nodes){
     
-    std::vector<std::vector<node*>>  modified_nodes(tree_depth); //List of inconsistent_nodes
+    //std::vector<std::vector<node*>>  modified_nodes(tree_depth); //List of inconsistent_nodes
+    std::vector<std::unordered_set<node*>> modified_nodes(tree_depth);
     for(int i = 0; i < num_nodes; i++){
         node* random_node = all_nodes_in_tree_in_order[rand() % total_nodes]; //randomly get node to modify
         random_node->my_p_val = rand() / (double) RAND_MAX;                   //new p-val
@@ -62,7 +64,7 @@ void stree::playTree(int num_nodes){
         }
         if(random_node->my_parent){
             if(!random_node->my_parent->is_dirty){ //avoid derefencing a NULL ptr here (hence the nesting)
-                modified_nodes[random_node->my_parent->my_depth].push_back(random_node->my_parent); //add parent to the modified-nodes vector
+                modified_nodes[random_node->my_parent->my_depth].insert(random_node->my_parent); //add parent to the modified-nodes 
                 random_node->my_parent->is_dirty = true;    //set the parent's dirty flag to true
             
             }
@@ -70,15 +72,21 @@ void stree::playTree(int num_nodes){
         
     }
     
-    for(int i = tree_depth-1; i >= 0; i--){ //crawl upwards
-        for(auto& dirty_node: modified_nodes[i]){ //c++ is helpful here :)
+    for(int i = tree_depth-1; i > 0; i--){ //crawl upwards
+        std::for_each(std::execution::par_unseq, modified_nodes.begin(), modified_nodes.end(),
+            [](auto&& dirty_node){
+                dirty_node->my_p_val_with_below = dirty_node->my_p_val + dirty_node->my_left_child->my_p_val_with_below + dirty_node->my_right_child->my_p_val_with_below; //make node consistent
+            });
+
+        /*for(auto& dirty_node: modified_nodes[i]){ //c++ is helpful here :)
             dirty_node->my_p_val_with_below = dirty_node->my_p_val + dirty_node->my_left_child->my_p_val_with_below + dirty_node->my_right_child->my_p_val_with_below; //make node consistent
-            if(i != 0 && !dirty_node->my_parent->is_dirty){ //check for root or dirty parent
-                modified_nodes[i-1].push_back(dirty_node->my_parent); //add if not already dirty
+            if(i != 0){ //check for root or dirty parent
+                modified_nodes[i-1].insert(dirty_node->my_parent); //add if not already dirty
                 dirty_node->my_parent->is_dirty = true; //set flag
             }
-        }
+        }*/
     }
+    root->my_p_val_with_below = root->my_p_val + root->my_left_child->my_p_val_with_below+root->my_right_child->my_p_val_with_below;
 
     std::cout << isOkay() << std::endl; //see if tree is feeling okay
 
