@@ -1,8 +1,8 @@
 #include "sTree.hpp"
 #include <unordered_set>
 #include <iostream>
-#include <algorithm>
-#include <execution>
+#include <parallel/algorithm>
+
 /* Lone Constructor */
 stree::stree(int depth) 
 {
@@ -73,18 +73,11 @@ void stree::playTree(int num_nodes){
     }
     
     for(int i = tree_depth-1; i > 0; i--){ //crawl upwards
-        std::for_each(std::execution::par_unseq, modified_nodes.begin(), modified_nodes.end(),
-            [](auto&& dirty_node){
-                dirty_node->my_p_val_with_below = dirty_node->my_p_val + dirty_node->my_left_child->my_p_val_with_below + dirty_node->my_right_child->my_p_val_with_below; //make node consistent
+        std::for_each(modified_nodes[i].begin(), modified_nodes[i].end(),
+            [](auto& dirty_node){
+                dirty_node->my_p_val_with_below = dirty_node->my_p_val + 
+                    dirty_node->my_left_child->my_p_val_with_below + dirty_node->my_right_child->my_p_val_with_below; //make node consistent
             });
-
-        /*for(auto& dirty_node: modified_nodes[i]){ //c++ is helpful here :)
-            dirty_node->my_p_val_with_below = dirty_node->my_p_val + dirty_node->my_left_child->my_p_val_with_below + dirty_node->my_right_child->my_p_val_with_below; //make node consistent
-            if(i != 0){ //check for root or dirty parent
-                modified_nodes[i-1].insert(dirty_node->my_parent); //add if not already dirty
-                dirty_node->my_parent->is_dirty = true; //set flag
-            }
-        }*/
     }
     root->my_p_val_with_below = root->my_p_val + root->my_left_child->my_p_val_with_below+root->my_right_child->my_p_val_with_below;
 
