@@ -70,7 +70,7 @@ void stree::playTree(int num_nodes){
         
     }
     
-    for(int i = tree_depth ; i >= 0; i--){ //crawl upwards
+    for(int i = tree_depth-1; i >= 0; i--){ //crawl upwards
         for(auto& dirty_node: modified_nodes[i]){ //c++ is helpful here :)
             dirty_node->my_p_val_with_below = dirty_node->my_p_val + dirty_node->my_left_child->my_p_val_with_below + dirty_node->my_right_child->my_p_val_with_below; //make node consistent
             if(i != 0 && !dirty_node->my_parent->is_dirty){ //check for root or dirty parent
@@ -85,11 +85,11 @@ void stree::playTree(int num_nodes){
 
 }
 
-
+/* Helper function to check tree consistency */
 bool isOkayHelper(node* root){
     if(root->my_left_child){
         double diff = abs(root->my_p_val_with_below - (root->my_p_val + root->my_left_child->my_p_val_with_below + root->my_right_child->my_p_val_with_below));
-        bool ret = diff < .0001; 
+        bool ret = diff < 1e-6; 
             if(!ret){
                 std::cout << "ERROR In Tree check at " << root->my_depth << std::endl;
                 std::cout << "GOT: " << root->my_p_val_with_below << std::endl;
@@ -100,7 +100,7 @@ bool isOkayHelper(node* root){
             isOkayHelper(root->my_right_child) && isOkayHelper(root->my_left_child);;
     } else{
         double diff = abs(root->my_p_val_with_below - root->my_p_val);
-        bool ret = diff < 1e-3; 
+        bool ret = diff < 1e-6; 
        if(!ret){
            std::cout << "ERROR In Tree check at " << root->my_depth << std::endl;
            std::cout << "GOT: " << root->my_p_val_with_below << std::endl;
