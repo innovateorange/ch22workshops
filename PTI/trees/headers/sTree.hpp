@@ -10,6 +10,7 @@ public:
     node* root;       //All trees have roots
     bool isOkay();    //Consistency check for tree
     void playTree(int num_nodes); //Playground for tree updates
+    void naiveCrawl(int num_nodes); //Naive crawl algorithm
 private:    
     
     void build_tree_helper(node* cur_root, int cur_depth, int max_depth); //tree builder algorithm

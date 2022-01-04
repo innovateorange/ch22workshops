@@ -31,3 +31,16 @@ node::node(node* l, node* r){
     my_right_child->my_depth = l->my_depth;
 
 }
+
+void node::crawl(){
+    if(my_left_child){
+        my_p_val_with_below = my_p_val + my_left_child->my_p_val_with_below + my_right_child->my_p_val_with_below;
+    } else{
+        my_p_val_with_below = my_p_val;
+    }
+    if(my_parent){
+        my_parent->crawl();
+    }
+    
+    
+}

@@ -14,7 +14,7 @@ int main(int argc, char* argv[]){
     parse_args(argc, argv, rtv);                                              //Parse the run-time commands
     stree tree(rtv->depth);                                                   //Create an initial tree
     tree.playTree(rtv->num_mods);                                             //Modify the tree randomly and update
-    
+    tree.naiveCrawl(rtv->num_mods);
 
     
 }

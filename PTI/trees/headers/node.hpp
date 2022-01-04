@@ -15,6 +15,7 @@ class node{
 public:
     node();
     node(node* l, node* r);
+    void crawl();
     double my_p_val;
     double my_p_val_with_below;
     node* my_left_child;
@@ -22,6 +23,7 @@ public:
     node* my_parent;
     int my_depth;
     bool is_dirty;    
+
 };
 
 #endif

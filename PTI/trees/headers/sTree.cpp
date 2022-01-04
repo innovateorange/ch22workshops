@@ -1,7 +1,6 @@
 #include "sTree.hpp"
 #include <unordered_set>
 #include <iostream>
-#include <parallel/algorithm>
 #include <chrono>
 /* Lone Constructor */
 stree::stree(int depth) 
@@ -90,7 +89,25 @@ void stree::playTree(int num_nodes){
 
 
 }
+void stree::naiveCrawl(int num_nodes){
+    std::chrono::high_resolution_clock clock;
+    auto start = clock.now();
+    std::vector<node*> modified_nodes;
+    for(int i = 0; i < num_nodes; i++){
+        node* random_node = all_nodes_in_tree_in_order[rand() % total_nodes]; //randomly get node to modify
+        random_node->my_p_val = rand() / (double) RAND_MAX;                   //new p-val
+        modified_nodes.push_back(random_node);
+    }
+    
+    for(auto& n: modified_nodes){
+        n->crawl();
+    }
+    auto end = clock.now();
 
+    std::cout << "Crawl task finished in " << std::chrono::duration_cast<std::chrono::microseconds>(end-start).count() << " microseconds" << std::endl;
+    std::cout << isOkay() << std::endl; //see if tree is feeling okay
+
+}
 /* Helper function to check tree consistency */
 bool isOkayHelper(node* root){
     if(root->my_left_child){
