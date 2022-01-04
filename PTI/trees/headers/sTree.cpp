@@ -2,7 +2,7 @@
 #include <unordered_set>
 #include <iostream>
 #include <parallel/algorithm>
-
+#include <chrono>
 /* Lone Constructor */
 stree::stree(int depth) 
 {
@@ -52,6 +52,8 @@ void stree::build_tree_helper(node* cur_root, int cur_depth, int max_depth){
 void stree::playTree(int num_nodes){
     
     //std::vector<std::vector<node*>>  modified_nodes(tree_depth); //List of inconsistent_nodes
+    std::chrono::high_resolution_clock clock;
+    auto start = clock.now();
     std::vector<std::unordered_set<node*>> modified_nodes(tree_depth);
     for(int i = 0; i < num_nodes; i++){
         node* random_node = all_nodes_in_tree_in_order[rand() % total_nodes]; //randomly get node to modify
@@ -63,24 +65,27 @@ void stree::playTree(int num_nodes){
             random_node->my_p_val_with_below = random_node->my_p_val;
         }
         if(random_node->my_parent){
-            if(!random_node->my_parent->is_dirty){ //avoid derefencing a NULL ptr here (hence the nesting)
-                modified_nodes[random_node->my_parent->my_depth].insert(random_node->my_parent); //add parent to the modified-nodes 
-                random_node->my_parent->is_dirty = true;    //set the parent's dirty flag to true
+            modified_nodes[random_node->my_parent->my_depth].insert(random_node->my_parent); //add parent to the modified-nodes 
+            random_node->my_parent->is_dirty = true;    //set the parent's dirty flag to true
             
-            }
         }
         
     }
     
     for(int i = tree_depth-1; i > 0; i--){ //crawl upwards
-        std::for_each(modified_nodes[i].begin(), modified_nodes[i].end(),
-            [](auto& dirty_node){
-                dirty_node->my_p_val_with_below = dirty_node->my_p_val + 
-                    dirty_node->my_left_child->my_p_val_with_below + dirty_node->my_right_child->my_p_val_with_below; //make node consistent
-            });
+        for(auto& dirty_node: modified_nodes[i]){
+            dirty_node->my_p_val_with_below = dirty_node->my_p_val + 
+                        dirty_node->my_left_child->my_p_val_with_below + 
+                        dirty_node->my_right_child->my_p_val_with_below; //make node consistent
+            
+            modified_nodes[i-1].insert(dirty_node->my_parent);
+            dirty_node->my_parent->is_dirty = true;
+        }
     }
     root->my_p_val_with_below = root->my_p_val + root->my_left_child->my_p_val_with_below+root->my_right_child->my_p_val_with_below;
+    auto end = clock.now();
 
+    std::cout << "Update task finished in " << std::chrono::duration_cast<std::chrono::microseconds>(end-start).count() << " microseconds" << std::endl;
     std::cout << isOkay() << std::endl; //see if tree is feeling okay
 
 
