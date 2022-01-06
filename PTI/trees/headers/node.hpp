@@ -15,6 +15,7 @@ class node{
 public:
     node();
     node(node* l, node* r);
+    void update();
     void crawl();
     double my_p_val;
     double my_p_val_with_below;
