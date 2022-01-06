@@ -3,4 +3,5 @@
 *.out
 *.out.dSYM
 *Adverts.md
+*.DS_STORE
 main
