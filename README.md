@@ -5,7 +5,7 @@ Welcome to the github repository for the cusehacks 2022 workshops
 
 ## Multicore programming in C
 Multicore programming is back again this year! We will be practicing using OpenMP to parallelize C-code. 
-This workshop is inspired by Tim Matteson (Intel) and relies heavilty on material created by 
+This workshop is inspired by Tim Matteson (Intel) and relies heavily on material created by 
 him for the expressed purpose of teaching OpenMP
 
 ### Content:
@@ -16,18 +16,18 @@ Alternatives to OpenMP
 
 ## Let's Learn A New Programming Language
 
-LLANPL is also back again this year! We will be practicing implementing fundamental C.S. concepts and solving classic problems in a modern programming langauge. Contact the Innovate Orange team if you have a language preference in advance of the material being published
+LLANPL is also back again this year! We will be practicing implementing fundamental C.S. concepts and solving classic problems in a modern programming language. Contact the Innovate Orange team if you have a language preference in advance of the material being published
 
 ### Content
 
-LLANPL will develop programs in either Rust or Kotlin to help facilitate hackers learning new langauges
+LLANPL will develop programs in either Rust or Kotlin to help facilitate hackers learning new languages
 
 Goals for LLANPL
 
 1. Learn the foundations of a new programming language
 2. Practice learning new languages using Matt's "On the fly development" strategy
 3. Develop a mastermind command line program
-4. Work through examples of classic programming problems that are designed to hone your abilities in a new langauge
+4. Work through examples of classic programming problems that are designed to hone your abilities in a new language
 
 
 # Preparing For Technical Interviews in C++
@@ -56,6 +56,6 @@ Learn about reinforcement learning and how you can apply it to problems in your 
 
 # Machine Learning pt 2: Neural Nets
 
-Learn about neural nets and how they work. Learn about the feed-forward and back propagation algorithms in addition to technologies like GANs and convolutional neural nets. Learn how you can use the Keras machine learning API to build and train your own models. We will also include a discussion on Natural Langauge Processing and General Purpose GPU programming
+Learn about neural nets and how they work. Learn about the feed-forward and back propagation algorithms in addition to technologies like GANs and convolutional neural nets. Learn how you can use the Keras machine learning API to build and train your own models. We will also include a discussion on Natural Language Processing and General Purpose GPU programming
 
 
