@@ -86,10 +86,15 @@ void stree::naiveCrawl(int num_nodes){
     std::chrono::high_resolution_clock clock;
     auto start = clock.now();
     std::vector<node*> modified_nodes;
+    node* random_node;
     for(int i = 0; i < num_nodes; i++){
-        node* random_node = all_nodes_in_tree_in_order[rand() % total_nodes]; //randomly get node to modify
-        random_node->my_p_val = rand() / (double) RAND_MAX;                   //new p-val
-        modified_nodes.push_back(random_node);
+        random_node = all_nodes_in_tree_in_order[rand() % total_nodes]; //randomly get node to modify
+                          
+        if(!random_node->is_dirty){
+            random_node->my_p_val = rand() / (double) RAND_MAX; //new p-val
+            modified_nodes.push_back(random_node);
+            random_node->is_dirty = true;
+        }
     }
     
     for(auto& n: modified_nodes){
