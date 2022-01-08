@@ -1,8 +1,25 @@
 from typing import TypeVar
 from world.action import Action, LEFT, RIGHT, DOWN, UP, EXIT
 
+"""
+A world class which describes the contents of each world (read problem environment) used in the Q-learning demo
 
-                          
+    Reinforcement learning demonstration - CuseHacks 2022
+    Author: Matthew Cufari
+    Date Created: Jan 7 2022
+
+"""
+
+"""
+World class:
+    noteworthy properties include - 
+        The reward function (note this is abstracted from the agent definition without good reason)
+        The domain of states
+        The state -> [action, resulting state] pairs 
+        The reward function need-not be a lambda but need follow the form
+            f(d) -> REAL where d is in the domain of states
+
+"""                          
 
 class world:
    
@@ -10,6 +27,7 @@ class world:
         self.name = preDefinedName
         self.actions, self.domain = self.getDomainAndActions(preDefinedName)
         self.rewardFunction = rewardFunction
+
     def getDomainAndActions(self, preDefinedName):
         if(preDefinedName=="gridWorld"):
             print("Making Grid World...")
