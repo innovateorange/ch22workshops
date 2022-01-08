@@ -38,6 +38,8 @@ void node::crawl(){
     } else{
         my_p_val_with_below = my_p_val;
     }
+    
+    is_dirty = false;
     if(my_parent){
         my_parent->crawl();
     }
@@ -48,4 +50,5 @@ void node::crawl(){
 void node::update(){
     my_p_val_with_below = my_left_child ?  my_p_val + my_right_child->my_p_val_with_below + my_left_child->my_p_val_with_below:
                                            my_p_val;
+    is_dirty = false;
 }
