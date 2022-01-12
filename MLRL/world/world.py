@@ -1,8 +1,8 @@
 from typing import TypeVar
 from world.action import Action, LEFT, RIGHT, DOWN, UP, EXIT
 from agent.agent import agent
-from PyQt6.QtWidgets import QApplication, QWidget, QMainWindow, QPushButton
-from PyQt6.QtGui import QPainter, QPen, QBrush, QPolygon, QColor, QFont
+from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6.QtGui import QPainter, QPen, QBrush, QPolygon, QColor
 from PyQt6.QtCore import Qt, QPoint
 import sys 
 
@@ -33,11 +33,9 @@ class world:
         self.actions, self.domain = self.getDomainAndActions(preDefinedName)
         self.rewardFunction = rewardFunction
         self.myAgent = agent(self.domain, self.actions, self.rewardFunction, epsilon=0.0, gamma=1.0)
-        self.app, self.window = self.initializeWindow()
-        """
-        Add visualization code here
-        #self.initializeWindow()
-        """
+        
+        self.initializeWindow()
+       
         
         
 
@@ -68,12 +66,7 @@ class world:
 
                 self.setWindowTitle("Q-learner")
                 self.setGeometry(self.top, self.left, self.width, self.height)
-                #self.button = QPushButton("Press Me!")
-                #self.button.setCheckable(True)
-                #self.button.clicked.connect(self.the_button_was_clicked)
-
-                # Set the central widget of the Window.
-                #self.setCentralWidget(self.button)
+                
                 
             def mousePressEvent(self, e):
                 shad_self.myAgent.iterateQValues()
@@ -111,9 +104,11 @@ class world:
                             painter.drawRect(self.width/5 * i, self.height/3 * j, self.width/5, self.height/3)
                             painter.setBrush(QBrush(Qt.GlobalColor.black, Qt.BrushStyle.NoBrush))
                             continue 
+                        
                         painter.setPen(prime_pen)
+                        painter.setBrush(QBrush(Qt.GlobalColor.lightGray, Qt.BrushStyle.SolidPattern))
                         painter.drawRect(self.width/5 * i, self.height/3 * j, self.width/5, self.height/3)
-                        painter.setBrush(QBrush(Qt.GlobalColor.black, Qt.BrushStyle.NoBrush))
+                        
 
                         
 
@@ -135,34 +130,44 @@ class world:
                         poly_b = QPolygon(points_bottom)
                         poly_r = QPolygon(points_right)
 
-                        painter.setPen(subPrime_pen)
                         
-
+                        
+                        painter.setPen(subPrime_pen)
                         for action in [UP, DOWN, LEFT, RIGHT]:
                             QVal = shad_self.myAgent.QValues[((j,i),action)]
                             b = 0
                             r = 0
                             g = 0
-                            if QVal > 0:
-                                g = QVal / 10.0 * 255.
-                            if QVal < 0:
-                                r = QVal/ -10.0 * 255.
+                            if QVal >= 0:
+                                g = min(255, QVal / 10.0 * 255.)
+                            elif QVal < 0:
+                                r = min(255, -QVal/ 10.0 * 255.)
                             painter.setBrush(QBrush(QColor(r,g,b), Qt.BrushStyle.SolidPattern))
-
+                            
                             if action == UP:
                                 painter.drawPolygon(poly_t)
+                                br = poly_t.boundingRect()
+                                painter.drawText(br, Qt.AlignmentFlag.AlignCenter, str(QVal))
                             elif action == RIGHT:
                                 painter.drawPolygon(poly_r)
+                                br = poly_r.boundingRect()
+                                painter.drawText(br, Qt.AlignmentFlag.AlignCenter, str(QVal))
                             elif action == LEFT:
                                 painter.drawPolygon(poly_l)
+                                br = poly_l.boundingRect()
+                                painter.drawText(br, Qt.AlignmentFlag.AlignCenter, str(QVal))
                             elif action == DOWN:
                                 painter.drawPolygon(poly_b)
+                                br = poly_b.boundingRect()
+                                painter.drawText(br, Qt.AlignmentFlag.AlignCenter, str(QVal))
                             
                                 
                         if (j,i) == shad_self.myAgent.currentState: 
                             painter.setPen(QPen(QColor(255, 255, 0), 5,  Qt.PenStyle.SolidLine))
                             painter.setBrush(QBrush(QColor(255, 255,0), Qt.BrushStyle.SolidPattern))
                             painter.drawEllipse(self.width/5 * (i+0.425), self.height/3 * (j+0.4), 40, 40)
+                            painter.setPen(subPrime_pen)
+                            
 
 
         app = QApplication(sys.argv)
@@ -171,11 +176,9 @@ class world:
         
         window.show()
         app.exec()
-        return app, window
+        
 
-        """
-            Implement a method which initializes a window for the game to take place. The window should be empty and all grey
-        """
+        
     def draw(self, qValues, activeState): 
         
         return False
