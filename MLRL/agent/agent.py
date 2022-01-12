@@ -1,6 +1,6 @@
 from universe.universe import universe
 import random
-import numpy as np
+
 
 """
     Q-Learning Agent class:
@@ -62,42 +62,43 @@ class agent:
                 self.QValues[(state,action)] = 0
         
         self.currentState = self.universe.world.domain[0] #Set initial state
-        self.iterateQValues()
+        
+        k = self.universe.world.draw(self.QValues, self.currentState) #draw initial q-values
+        self.iterateQValues() #wait for control to return before beginning drawing
 
     def iterateQValues(self):
-        
-        for i in range(1000): #Play the world a fixed number of times
-            
-            self.currentState = self.universe.world.domain[0] #Set the initial state
+        controlFlag = True
+        while(controlFlag):
+            if(self.currentState == "EXIT_GOOD" or self.currentState == "EXIT_BAD"): #Reset when reaching either point
+                self.currentState = self.universe.world.domain[0] #reset to initial state
 
-            while self.currentState != "EXIT_GOOD" and self.currentState != "EXIT_BAD": #Exit when reaching either point
-                qNew = []
-                newAction, newState = (None, None)
-                if(random.random() > self.epsilon*np.exp(-i/100.0)): #Decrease epsilon to 0 as i increases
+            qNew = []
+            newAction, newState = (None, None)
+            if(random.random() > self.epsilon): #Decrease epsilon to 0 as i increases
 
-                    bestQ = -1e10
-                    
-                    for action, nextState in self.universe.world.actions[self.currentState]:
-                        if self.QValues[(self.currentState, action)] > bestQ or newAction == None: #pick the best Q-value from the available options
-                            newAction = action
-                            newState = nextState
-                            bestQ = self.QValues[(self.currentState, action)]
-                    
-                else:
-                    newAction, newState = random.choice(self.universe.world.actions[self.currentState]) #randomly choose an action
-                for action, unUsedState in self.universe.world.actions[newState]:
-                    qNew.append(self.QValues[(newState, action)]) 
+                bestQ = -1e10
                 
-                #Q-learning update equation
-                if(qNew):
-                    self.QValues[(self.currentState, newAction)] += self.universe.world.rewardFunction(newState) +  self.gamma * (max(qNew) - self.QValues[(self.currentState,newAction)]) 
-                    self.currentState = newState
-                else:
-                    self.QValues[(self.currentState, newAction)] = self.universe.world.rewardFunction(newState) 
-                    self.currentState = newState
-            self.printQValues()
-            #self.universe.world.visualizeQValues(self.QValues)
-    
+                for action, nextState in self.universe.world.actions[self.currentState]:
+                    if self.QValues[(self.currentState, action)] > bestQ or newAction == None: #pick the best Q-value from the available options
+                        newAction = action
+                        newState = nextState
+                        bestQ = self.QValues[(self.currentState, action)]
+                
+            else:
+                newAction, newState = random.choice(self.universe.world.actions[self.currentState]) #randomly choose an action
+            for action, unUsedState in self.universe.world.actions[newState]:
+                qNew.append(self.QValues[(newState, action)]) 
+            
+            #Q-learning update equation
+            if(qNew):
+                self.QValues[(self.currentState, newAction)] += self.universe.world.rewardFunction(newState) +  self.gamma * (max(qNew) - self.QValues[(self.currentState,newAction)]) 
+                self.currentState = newState
+            else:
+                self.QValues[(self.currentState, newAction)] = self.universe.world.rewardFunction(newState) 
+                self.currentState = newState
+            
+            controlFlag = self.universe.world.draw(self.QValues, self.currentState) 
+            
     def printQValues(self):
         for state, optionsResults in self.universe.world.actions.items():
             for action, newState in optionsResults:
