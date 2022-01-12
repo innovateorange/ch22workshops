@@ -4,4 +4,5 @@
 *.out.dSYM
 *Adverts.md
 *.DS_STORE
+__pycache__
 main

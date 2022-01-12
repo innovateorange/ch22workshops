@@ -1,4 +1,4 @@
-from agent.agent import agent
+from universe.universe import universe
 if __name__ == "__main__":
     
-    myAgent = agent(epsilon=1.0, gamma=1.0)
+    newUniverse = universe("universe A", "gridWorld")
