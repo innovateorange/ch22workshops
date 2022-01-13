@@ -1,11 +1,10 @@
-
 from world.action import LEFT, RIGHT, DOWN, UP, EXIT
 from agent.agent import agent
 from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6.QtGui import QPainter, QPen, QBrush, QPolygon, QColor
 from PyQt6.QtCore import Qt, QPoint, QTimer, QRect
 import sys 
-
+import numpy as np
 """
 A world class which describes the contents of each world (read problem environment) used in the Q-learning demo
 
@@ -33,7 +32,7 @@ class world:
         self.name = preDefinedName                                              # Name of grid_world type
         self.actions, self.domain, self.exit_states = self.getDomainAndActions(preDefinedName)    # Get the actions and domains of the world
         self.rewardFunction = rewardFunction                                    # Set the reward function of the world
-        self.myAgent = agent(self.domain, self.actions, self.rewardFunction, epsilon=0.0, gamma=0.5) #Create a new agent
+        self.myAgent = agent(self.domain, self.actions, self.rewardFunction, epsilon=0.0, gamma=1.0) #Create a new agent
         
         self.initializeWindow() #Create a new world window
        
@@ -109,6 +108,8 @@ class world:
                 self.update()                      #Call to trigger paintEvent
 
             def paintEvent(self, event):
+                self.height = self.frameGeometry().height() - 28
+                self.width = self.frameGeometry().width()
                 
                 painter = QPainter(self)           #QPainter Object for mainWindow
 
@@ -213,7 +214,8 @@ class world:
                     j,i = shad_self.myAgent.currentState #get j,i of current state
                     painter.setPen(QPen(QColor(255, 255, 0), 5,  Qt.PenStyle.SolidLine)) #yellow
                     painter.setBrush(QBrush(QColor(255, 255,0), Qt.BrushStyle.SolidPattern)) #yellow
-                    painter.drawEllipse(self.width/5 * (i+0.425), self.height/3 * (j+0.4), 40, 40) #color a disk with proper offset
+                    dist = np.sqrt((self.height/3.0)**2 + (self.width/5.0)**2) /16.0
+                    painter.drawEllipse(QPoint(self.width/5 *(i+0.5), self.height/3 * (j+0.5)), dist,dist) #color a disk with proper offset
                     painter.setPen(subPrime_pen) #set pen to white again
                 except ValueError:
                     pass 
