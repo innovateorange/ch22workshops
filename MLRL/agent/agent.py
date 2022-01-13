@@ -72,10 +72,12 @@ class agent:
         self.iters += 1
         if(self.currentState == "EXIT_GOOD" or self.currentState == "EXIT_BAD"): #Reset when reaching either point
             self.currentState = self.domain[0] #reset to initial state
+            self.iters = 0
             return
         qNew = []
         newAction, newState = (None, None)
-        if(random.random() > self.epsilon * np.exp(-self.iters/1e7)): #Decrease epsilon to 0 as i increases
+        r = random.random()
+        if(r > self.epsilon): #Decrease epsilon to 0 as i increases
 
             bestQ = -1e10
             newActionList = []
@@ -98,14 +100,29 @@ class agent:
         
         #Q-learning update equation
         if(qNew):
-            self.QValues[(self.currentState, newAction)] = self.rewardFunction(newState) +  self.gamma * (max(qNew) - self.QValues[(self.currentState,newAction)]) 
+            self.QValues[(self.currentState, newAction)] = 0.9 * self.QValues[(self.currentState, newAction)] + \
+                                                        0.1*(self.rewardFunction(newState) +  self.gamma * (max(qNew) - self.QValues[(self.currentState,newAction)])) 
             
         else:
             self.QValues[(self.currentState, newAction)] = self.rewardFunction(newState) 
         
+        
+        r = random.random()
+
+        if(r < 0.2):
+            newStatesList = []
+            for action, randState in self.actions[self.currentState]:
+                
+                if randState == newState:
+                    continue
+                else:
+                    newStatesList.append(randState)
+            if newStatesList:
+                newState = random.choice(newStatesList)
+                
         self.currentState = newState
-            
-            
+
+       
     def printQValues(self):
         for state, optionsResults in self.actions.items():
             for action, newState in optionsResults:

@@ -29,7 +29,7 @@ def manhattanDist(x1,x2):
     return abs(x1[1]-x2[1])+abs(x1[0]-x2[0])
 class world:
    
-    def __init__(self, preDefinedName, rewardFunction=lambda s: 10 if (s=="EXIT_GOOD") else (-10 if (s=="EXIT_BAD") else -manhattanDist(s,(2,4))/6)):
+    def __init__(self, preDefinedName, rewardFunction=lambda s: 10 if (s=="EXIT_GOOD") else (-10 if (s=="EXIT_BAD") else -1 )):
         self.name = preDefinedName                                              # Name of grid_world type
         self.actions, self.domain, self.exit_states = self.getDomainAndActions(preDefinedName)    # Get the actions and domains of the world
         self.rewardFunction = rewardFunction                                    # Set the reward function of the world
