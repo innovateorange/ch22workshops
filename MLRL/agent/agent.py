@@ -108,12 +108,22 @@ class agent:
         
         
         r = random.random()
-
+        """
+         Theres a 20% chance the agent goes to a random cell which is 
+        """
         if(r < 0.2):
             newStatesList = []
             for action, randState in self.actions[self.currentState]:
                 
                 if randState == newState:
+                    continue
+                elif newAction == UP and action == DOWN:
+                    continue
+                elif newAction == DOWN and action == UP:
+                    continue
+                elif newAction == LEFT and action == RIGHT:
+                    continue
+                elif newAction == RIGHT and action == LEFT:
                     continue
                 else:
                     newStatesList.append(randState)
