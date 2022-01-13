@@ -25,14 +25,15 @@ World class:
             f(d) -> REAL where d is in the domain of states
 
 """                          
-
+def manhattanDist(x1,x2):
+    return abs(x1[1]-x2[1])+abs(x1[0]-x2[0])
 class world:
    
-    def __init__(self, preDefinedName, rewardFunction=lambda s: 10 if (s=="EXIT_GOOD") else (-10 if (s=="EXIT_BAD") else -1)):
+    def __init__(self, preDefinedName, rewardFunction=lambda s: 10 if (s=="EXIT_GOOD") else (-10 if (s=="EXIT_BAD") else -manhattanDist(s,(2,4))/6)):
         self.name = preDefinedName                                              # Name of grid_world type
         self.actions, self.domain, self.exit_states = self.getDomainAndActions(preDefinedName)    # Get the actions and domains of the world
         self.rewardFunction = rewardFunction                                    # Set the reward function of the world
-        self.myAgent = agent(self.domain, self.actions, self.rewardFunction, epsilon=0.0, gamma=1.0) #Create a new agent
+        self.myAgent = agent(self.domain, self.actions, self.rewardFunction, epsilon=0.0, gamma=0.5) #Create a new agent
         
         self.initializeWindow() #Create a new world window
        
@@ -99,7 +100,10 @@ class world:
                     self.interval = self.interval / 2
                     self.timer.setInterval(self.interval)
                     self.timer.start()
-                    
+                if e.key() == Qt.Key.Key_Backspace:
+                    self.timer.stop()
+                    self.interval = 1000
+                    self.timer.setInterval(self.interval)
             def updateEvent(self):
                 shad_self.myAgent.iterateQValues() #Call to agent's q-learner algorithm
                 self.update()                      #Call to trigger paintEvent
@@ -108,9 +112,9 @@ class world:
                 
                 painter = QPainter(self)           #QPainter Object for mainWindow
 
-                prime_pen = QPen(Qt.GlobalColor.blue,  5, Qt.PenStyle.SolidLine) #Prime pen is blue
+                prime_pen = QPen(Qt.GlobalColor.white,  5, Qt.PenStyle.SolidLine) #Prime pen is white
                 subPrime_pen = QPen(Qt.GlobalColor.white, 3, Qt.PenStyle.SolidLine) #subprime pen is white
-                painter.setPen(prime_pen) #Set pen to blue for rectangle grid
+                painter.setPen(prime_pen) #Set pen to white for rectangle grid
 
                 for i in range(5):
                     for j in range(3):
@@ -123,7 +127,7 @@ class world:
                         elif (j,i) in shad_self.exit_states[1]: #bad exit == colored poorly
                             QVal = str(shad_self.myAgent.QValues[(j,i),EXIT]) #get string of qVal
                             painter.setBrush(QBrush(QColor(255, 0,0 ), Qt.BrushStyle.SolidPattern)) #set painter to red
-                            painter.setPen(prime_pen)                                               #set pen to blue border
+                            painter.setPen(prime_pen)                                               #set pen to white border
                             rect = QRect(self.width/5 * (i+0.1), self.height/3 * (j+0.1), self.width/5-self.width/5 *0.2, self.height/3 - self.height/3*0.2) #get a rectangle
                             painter.drawRect(rect)   #draw the rectangle
                             
@@ -144,7 +148,7 @@ class world:
                             painter.setBrush(QBrush(Qt.GlobalColor.black, Qt.BrushStyle.NoBrush)) #reset brush
                             continue 
                         
-                        painter.setPen(prime_pen) #set pen to blue
+                        painter.setPen(prime_pen) #set pen to white
                         painter.setBrush(QBrush(Qt.GlobalColor.black, Qt.BrushStyle.SolidPattern)) #set brush to black
                         painter.drawRect(self.width/5 * i, self.height/3 * j, self.width/5, self.height/3) #draw grid
                         
@@ -190,19 +194,19 @@ class world:
                             if action == UP: #if up color top triangle
                                 painter.drawPolygon(poly_t)
                                 br = poly_t.boundingRect()
-                                painter.drawText(br, Qt.AlignmentFlag.AlignCenter, str(QVal)) #add text of qval
+                                painter.drawText(br, Qt.AlignmentFlag.AlignCenter, "{:6.2f}".format(QVal)) #add text of qval
                             elif action == RIGHT:
                                 painter.drawPolygon(poly_r)
                                 br = poly_r.boundingRect()
-                                painter.drawText(br, Qt.AlignmentFlag.AlignCenter, str(QVal))
+                                painter.drawText(br, Qt.AlignmentFlag.AlignCenter, "{:6.2f}".format(QVal))
                             elif action == LEFT:
                                 painter.drawPolygon(poly_l)
                                 br = poly_l.boundingRect()
-                                painter.drawText(br, Qt.AlignmentFlag.AlignCenter, str(QVal))
+                                painter.drawText(br, Qt.AlignmentFlag.AlignCenter, "{:6.2f}".format(QVal))
                             elif action == DOWN:
                                 painter.drawPolygon(poly_b)
                                 br = poly_b.boundingRect()
-                                painter.drawText(br, Qt.AlignmentFlag.AlignCenter, str(QVal))
+                                painter.drawText(br, Qt.AlignmentFlag.AlignCenter, "{:6.2f}".format(QVal))
                             
                       
                 try:

@@ -1,6 +1,6 @@
 import random
 from world.action import UP, DOWN, LEFT, RIGHT, EXIT
-
+import numpy as np
 """
     Q-Learning Agent class:
         Reinforcement learning demonstration - CuseHacks 2022
@@ -64,26 +64,33 @@ class agent:
                 self.QValues[(state,action)] = 0
         
         self.currentState = self.domain[0] #Set initial state
-            
+        self.iters = 0
        
 
     def iterateQValues(self):
         
+        self.iters += 1
         if(self.currentState == "EXIT_GOOD" or self.currentState == "EXIT_BAD"): #Reset when reaching either point
             self.currentState = self.domain[0] #reset to initial state
             return
         qNew = []
         newAction, newState = (None, None)
-        if(random.random() > self.epsilon): #Decrease epsilon to 0 as i increases
+        if(random.random() > self.epsilon * np.exp(-self.iters/1e7)): #Decrease epsilon to 0 as i increases
 
             bestQ = -1e10
-            
+            newActionList = []
             for action, nextState in self.actions[self.currentState]:
-                if self.QValues[(self.currentState, action)] > bestQ or newAction == None: #pick the best Q-value from the available options
-                    newAction = action
-                    newState = nextState
-                    bestQ = self.QValues[(self.currentState, action)]
+                QVal = self.QValues[(self.currentState, action)]
+               
+                if QVal > bestQ or not newActionList: #pick the best Q-value from the available options
+                    newActionList = [(action,nextState)]
+                    bestQ = QVal
+
+                elif abs(QVal - bestQ) < 1e-6:
+                    newActionList.append((action,nextState))
+                
             
+            newAction, newState = random.choice(newActionList)
         else:
             newAction, newState = random.choice(self.actions[self.currentState]) #randomly choose an action
         for action, unUsedState in self.actions[newState]:
@@ -91,11 +98,12 @@ class agent:
         
         #Q-learning update equation
         if(qNew):
-            self.QValues[(self.currentState, newAction)] += self.rewardFunction(newState) +  self.gamma * (max(qNew) - self.QValues[(self.currentState,newAction)]) 
-            self.currentState = newState
+            self.QValues[(self.currentState, newAction)] = self.rewardFunction(newState) +  self.gamma * (max(qNew) - self.QValues[(self.currentState,newAction)]) 
+            
         else:
             self.QValues[(self.currentState, newAction)] = self.rewardFunction(newState) 
-            self.currentState = newState
+        
+        self.currentState = newState
             
             
     def printQValues(self):
