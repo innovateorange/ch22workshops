@@ -71,7 +71,7 @@ class agent:
         
         if(self.currentState == "EXIT_GOOD" or self.currentState == "EXIT_BAD"): #Reset when reaching either point
             self.currentState = self.domain[0] #reset to initial state
-
+            return
         qNew = []
         newAction, newState = (None, None)
         if(random.random() > self.epsilon): #Decrease epsilon to 0 as i increases
