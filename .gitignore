@@ -4,5 +4,6 @@
 *.out.dSYM
 *Adverts.md
 *.DS_STORE
+glfw-3.3.2
 __pycache__
 main
