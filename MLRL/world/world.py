@@ -60,6 +60,20 @@ class world:
             exit_states_good = [(2,4)]
             exit_states_bad = [(0,4)]
             return actions, domain, (exit_states_good, exit_states_bad)
+        if(preDefinedName=="gridWorld2"):
+            domain = [(0,0), (0,1), (0,2), (0,3), (0,4),
+                      (1,0), (1,1),  (1,2) ,     (1,3), (1,4),
+                      (2,0),  (2,1), (2,2), (2,3), (2,4), "EXIT_GOOD", "EXIT_BAD"]
+            actions = {(0,0):[(RIGHT, (0,1)), (DOWN, (1,0))], (0,1):[(LEFT,(0,0)), (DOWN, (1,1)), (RIGHT,(0,2))], (0,2):[(RIGHT, (0,3)), (LEFT,(0,1)),(DOWN,(1,2))], 
+                       (0,3):[(RIGHT,(0,4)), (LEFT, (0,2)), (DOWN, (1,3))], (0,4):[(EXIT, "EXIT_BAD")],
+                       (1,0):[(UP, (0,1)), (RIGHT, (1,1)),(DOWN, (2,0))], (1,1):[(LEFT, (1,0)), (UP, (0,1)), (DOWN,(2,1)),(RIGHT,(1,2))], (1,2):[(UP,(0,2)),(DOWN,(2,2)),(LEFT,(1,1)),(RIGHT,(1,3))],
+                       (1,3):[(UP,(0,3)), (RIGHT, (1,4)), (DOWN,(2,3)),(LEFT,(1,2))],
+                       (1,4):[(UP,(0,4)), (LEFT, (1,3)),(DOWN, (2,4))],
+                       (2,0):[(UP, (1,0)), (RIGHT, (2,1))], (2,1):[(LEFT,(2,0)), (UP, (1,1)), (RIGHT, (2,2))], (2,2):[(RIGHT, (2,3)), (LEFT, (2,1)),(UP,(1,2))], 
+                       (2,3):[(UP,(1,3)),(LEFT,(2,2)),(RIGHT,(2,4))], (2,4):[(EXIT,"EXIT_GOOD")], "EXIT_GOOD":[], "EXIT_BAD":[]}
+            exit_states_good = [(2,4)]
+            exit_states_bad = [(0,4)]
+            return actions, domain, (exit_states_good, exit_states_bad)
 
         
         
