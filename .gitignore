@@ -16,6 +16,7 @@ LLANPL/Chapter3/loops/target/*
 LLANPL/Chapter3/variables/target/*
 LLANPL/Chapter4/first_word/target/*
 LLANPL/Chapter5/rectangles/target/*
+NNETS/.ipynb_checkpoints/*
 *.json
 window 
 triangle
