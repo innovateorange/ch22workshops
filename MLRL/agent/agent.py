@@ -8,7 +8,7 @@ import numpy as np
         Date Created: Jan 7 2022
 
     Methods - 
-        constructor (__init__):
+        constructor (___init___):
             args: 
                 self, 
                 kwargs (key-word args)
